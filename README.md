@@ -10,7 +10,7 @@ This package provides an easy-to-use interface for integrating **[OpenRouter](ht
 - [Requirements](#-requirements)
 - [Configuration](#-configuration)
 - [Usage](#-usage)
-    - [Understanding ChatData DTO](#understanding-chatdata-dto)
+    - [Understanding ChatRequest DTO](#understanding-chatdata-dto)
         - [LLM Parameters](#llm-parameters)
         - [Function-calling](#function-calling)
         - [Additional Optional Parameters](#additional-optional-parameters)
@@ -24,6 +24,9 @@ This package provides an easy-to-use interface for integrating **[OpenRouter](ht
     - [Function Calling](#function-calling)
 - [Contributing](#-contributing)
 - [License](#-license)
+
+> Special thanks to [Moe Mizrak](https://github.com/moe-mizrak) for his work on [laravel-openrouter](https://github.com/moe-mizrak/laravel-openrouter). This package is a derivative of his work.
+
 
 ## Requirements
 This is a low dependency package, but you need to ensure that your environment meets the following requirements:

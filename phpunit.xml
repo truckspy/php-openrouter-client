@@ -1,0 +1,13 @@
+<phpunit bootstrap="vendor/autoload.php" colors="true">
+    <testsuites>
+        <testsuite name="Application Tests">
+            <directory>./tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <php>
+        <env name="APP_ENV" value="testing"/>
+        <env name="OPENROUTER_API_KEY" value=""/>
+        <env name="OPENROUTER_API_ENDPOINT" value="https://openrouter.ai/api/v1/"/>
+    </php>
+</phpunit>

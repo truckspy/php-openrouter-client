@@ -43,13 +43,13 @@ $client = new OpenRouter(
         apiKey: 'your_api_key'
         // see source for other optional configuration options
     )
-)
+);
 ```
 
-If you're symfony, you can configure the `OpenRouterConfig` as a service in your `services.yaml` file:
+If you're using symfony, you can configure the `OpenRouterConfig` as a service in your `services.yaml` file:
 ```yaml
 services:
-    fholbrook\OpenRouter\OpenRouterConfig:
+    fholbrook\Openrouter\OpenRouterConfig:
         arguments:
             $apiKey: '%env(OPENROUTER_API_KEY)%'
 ```

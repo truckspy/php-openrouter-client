@@ -20,6 +20,9 @@ This package provides an easy-to-use interface for integrating **[OpenRouter](ht
     - [Creating a ChatRequest](#creating-a-chatrequest)
     - [Maintaining Conversation Continuity](#maintaining-conversation-continuity)
     - [Serialization/Deserialization](#serializationdeserialization)
+    - [Multimodal Content](#multimodal-content)
+        - [Working with Images](#working-with-images)
+        - [Working with PDFs](#working-with-pdfs)
     - [Structured Output](#structured-output)
     - [Function Calling](#function-calling)
 - [Contributing](#-contributing)
@@ -95,7 +98,7 @@ The [`Chat`](src/DTO/Chat.php) class is used to model a chat conversation betwee
 ### Understanding Message DTO
 The [`Message`](src/DTO/Message.php) class is used to model a back-and-forth conversation between the user and the AI. It contains the following properties:
 - **role** (string): The role of the message such as `user`, `assistant`, `system`, `tool`. See [`RoleType`](src/Enum/RoleType.php).
-- **content** (string|array|ImageContent[]|TextContent[]): The content of the message. This can be a string or an array of content parts. See [`TextContent`](src/DTO/TextContent.php) and [`ImageContent`](src/DTO/ImageContent.php).
+- **content** (string|array|ImageContent[]|TextContent[]|PdfContent[]): The content of the message. This can be a string or an array of content parts. See [`TextContent`](src/DTO/TextContent.php), [`ImageContent`](src/DTO/ImageContent.php), and [`PdfContent`](src/DTO/PdfContent.php).
 - **name** (string|null): The name of the user to enable personalized messages.
 - **stamps** (StampInterface[]): An array of stamps on the message, this is metadata about the message.
 
@@ -209,6 +212,77 @@ $json = json_encode($chat->toArray(includeMetadata: true));
 $chat = Chat::fromArray(json_decode($json, true));
 
 ```
+
+### Multimodal Content
+
+This package supports OpenRouter's multimodal capabilities, allowing you to include images and PDFs in your chat messages alongside text.
+
+#### Working with Images
+
+The [`ImageContent`](src/DTO/ImageContent.php) class supports both URL and base64-encoded images. Supported formats include PNG, JPEG, WebP, and GIF.
+
+```php
+use fholbrook\Openrouter\DTO\ImageContent;
+use fholbrook\Openrouter\DTO\TextContent;
+
+// From URL
+$imageFromUrl = new ImageContent('https://example.com/image.jpg');
+
+// From local file (automatically base64 encoded)
+$imageFromFile = ImageContent::fromFile('/path/to/image.jpg');
+
+// From image content/data
+$imageFromContent = ImageContent::fromContent($imageData);
+
+// Using in a message with mixed content
+$message = new Message(
+    role: RoleType::USER,
+    content: [
+        new TextContent('What do you see in this image?'),
+        $imageFromUrl
+    ]
+);
+```
+
+#### Working with PDFs
+
+The [`PdfContent`](src/DTO/PdfContent.php) class supports both URL and base64-encoded PDF documents, enabling document analysis and question-answering capabilities.
+
+```php
+use fholbrook\Openrouter\DTO\PdfContent;
+
+// From URL
+$pdfFromUrl = PdfContent::fromUrl('https://example.com/document.pdf', 'contract.pdf');
+
+// From local file (automatically base64 encoded with validation)
+$pdfFromFile = PdfContent::fromFile('/path/to/document.pdf', 'analysis.pdf');
+
+// From PDF content/data
+$pdfFromContent = PdfContent::fromContent($pdfData, 'report.pdf');
+
+// Using in a message
+$message = new Message(
+    role: RoleType::USER,
+    content: [
+        new TextContent('Please summarize the key points in this document.'),
+        $pdfFromFile
+    ]
+);
+
+// Complete chat request with PDF
+$chatRequest = new ChatRequest(
+    chat: new Chat(
+        messages: [$message]
+    ),
+    model: 'anthropic/claude-3.5-sonnet'
+);
+```
+
+**PDF Processing Features:**
+- Automatic PDF validation using MIME type detection
+- Support for both public URLs and base64-encoded content
+- Filename handling for better context
+- Compatible with OpenRouter's PDF processing engines (`pdf-text`, `mistral-ocr`, `native`)
 
 ### Structured Output
 (Please also refer to [OpenRouter Document Structured Output](https://openrouter.ai/docs/structured-outputs) for models supporting structured output, also for more details)

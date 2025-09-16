@@ -11,7 +11,7 @@ class Message
         /**
          * The content of the message.
          *
-         * @var string|TextContent[]|ImageContent[]|array|null
+         * @var string|TextContent[]|ImageContent[]|PdfContent[]|array|null
          */
         public string|array|null $content = null,
 
